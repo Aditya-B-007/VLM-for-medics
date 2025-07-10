@@ -1,1 +1,33 @@
+Application Overview: 
+TinyLlama + SigLIP is a specialized application for visual question answering on medical imagery.
+It fuses a powerful vision encoder (google/siglip-so400m-patch14-384) with a compact language
+model (TinyLlama/TinyLlama-1.1B-Chat-v1.0).
+Workflows:
+Fine-Tuning: Train the VLM on custom medical datasets (images + text).
+Inference: Run real-time CLI-based predictions from an image and prompt.
+The system runs entirely in a Docker container, making it portable, isolated, and consistent.
+Architecture and Development:
+Modular and script-driven.
+Central configuration file for shared parameters.
+Easy to maintain and extend.
+Core Components:
+1. config.py
+Manages all configs: model names, paths, hyperparameters, device settings.
+Uses os.getenv for flexibility in container environments.
+2. model.py
+Defines the VLM class: vision encoder + language model + connector layer.
+Vision class uses token reshaping (r=Config.VISION_TOWER_R) to enhance spatial awareness.
+VLMModel handles loading of models and tokenizers, and fine-tuned weights.
+3. training_model.py
+Loads and processes JSONL dataset using datasets.map().
+Uses custom_collate_fn with ThreadPoolExecutor for memory efficiency.
+Training loop via Hugging Face's Trainer API; only connector layer is trained.
+4. realt_time_prediction.py
+Loads model and enters CLI loop.
+Accepts image + prompt, runs model.generate(), and prints result.
+Containerization:
+Dockerfile based on pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime.
+Requirements.txt installed early for layer caching.
+Uses CMD ["python", "realt_time_prediction.py"] by default.
+.dockerignore keeps the build clean and small.
 
