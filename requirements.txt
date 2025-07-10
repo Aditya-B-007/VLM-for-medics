@@ -1,0 +1,10 @@
+torch
+transformers
+datasets
+Pillow
+accelerate
+bitsandbytes
+sentencepiece
+fastapi
+uvicorn[standard]
+python-multipart
